@@ -546,12 +546,32 @@ Yes, Flomatexs Construction Limited typically provides a warranty or guarantee o
 
 
                     <div class="col-md-6">
-                        <p>Designed By <a href="">AY</a></p>
+                        <p>Designed By <a href="">AY</a> | <a href="#" id="adminLoginBtn" style="color: #fff; text-decoration: none;"><i class="fas fa-user-shield"></i> Admin</a></p>
                     </div>
                 </div>
             </div>
         </div>
         <!-- Footer End -->
+
+        <!-- Admin Login Modal -->
+        <div id="adminLoginModal" class="admin-modal">
+            <div class="admin-modal-content">
+                <span class="admin-close">&times;</span>
+                <h2 style="text-align: center; margin-bottom: 20px;">Admin Login</h2>
+                <form id="adminLoginForm">
+                    <div class="admin-form-group">
+                        <label for="adminUsername"><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="adminUsername" name="username" required autocomplete="username">
+                    </div>
+                    <div class="admin-form-group">
+                        <label for="adminPassword"><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="adminPassword" name="password" required autocomplete="current-password">
+                    </div>
+                    <div id="adminLoginError" class="admin-error-message"></div>
+                    <button type="submit" class="admin-login-btn">Login</button>
+                </form>
+            </div>
+        </div>
 
         <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
     </div>
