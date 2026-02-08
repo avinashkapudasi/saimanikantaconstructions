@@ -4,7 +4,7 @@
 (function () {
     'use strict';
 
-    var SERVER = 'http://localhost:3000';
+    var SERVER = '';
 
     // Boot
     if (document.readyState === 'loading') {

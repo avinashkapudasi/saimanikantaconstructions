@@ -1,0 +1,91 @@
+{
+  "projects": [
+    {
+      "id": "seed-proj2",
+      "name": "Madhavadara Residential Project",
+      "description": "Premium residential construction project in Madhavadara area, Visakhapatnam.",
+      "category": "first",
+      "folder": "proj2",
+      "location": "Madhavadara, Visakhapatnam",
+      "status": "Completed",
+      "client": "Madhavadara",
+      "duration": "6months",
+      "area": "",
+      "type": "Residential",
+      "mainImage": "img/proj2/main.jpg",
+      "images": [],
+      "createdAt": "2024-03-07T00:00:00.000Z",
+      "updatedAt": "2026-02-08T05:23:49.380Z"
+    },
+    {
+      "id": "seed-proj3",
+      "name": "Srinivasa Nagar Villa",
+      "description": "Luxury villa construction with modern amenities in Srinivasa Nagar.",
+      "category": "first",
+      "folder": "proj3",
+      "location": "Srinivasa Nagar, Visakhapatnam",
+      "status": "Completed",
+      "client": "",
+      "duration": "",
+      "area": "",
+      "type": "Residential",
+      "mainImage": "img/proj3/main.jpg",
+      "images": [],
+      "createdAt": "2024-03-07T00:00:00.000Z",
+      "updatedAt": "2024-03-07T00:00:00.000Z"
+    },
+    {
+      "id": "seed-proj4",
+      "name": "Pendurthi Township",
+      "description": "Modern township development project in Pendurthi region.",
+      "category": "second",
+      "folder": "proj4",
+      "location": "Pendurthi, Visakhapatnam",
+      "status": "In Progress",
+      "client": "",
+      "duration": "",
+      "area": "",
+      "type": "Residential",
+      "mainImage": "img/proj4/main.jpg",
+      "images": [],
+      "createdAt": "2024-03-07T00:00:00.000Z",
+      "updatedAt": "2024-03-07T00:00:00.000Z"
+    },
+    {
+      "id": "seed-proj6",
+      "name": "Gajuwaka Premium Residency",
+      "description": "High-quality residential construction in Gajuwaka with premium finishes.",
+      "category": "second",
+      "folder": "proj6",
+      "location": "Gajuwaka, Visakhapatnam",
+      "status": "In Progress",
+      "client": "",
+      "duration": "",
+      "area": "",
+      "type": "Residential",
+      "mainImage": "img/proj6/main.jpg",
+      "images": [],
+      "createdAt": "2024-03-07T00:00:00.000Z",
+      "updatedAt": "2024-03-07T00:00:00.000Z"
+    },
+    {
+      "id": "1770532150295",
+      "name": "test",
+      "description": "test",
+      "category": "second",
+      "folder": "test",
+      "location": "test1",
+      "status": "",
+      "client": "a",
+      "duration": "6",
+      "area": "2500",
+      "type": "residential",
+      "mainImage": "img/test/main.jpg",
+      "images": [
+        "img/test/sword-art-online-kirito-sword-art-online-wallpaper-preview.jpg"
+      ],
+      "createdAt": "2026-02-08T06:29:10.296Z",
+      "updatedAt": "2026-02-08T06:29:10.296Z"
+    }
+  ]
+}

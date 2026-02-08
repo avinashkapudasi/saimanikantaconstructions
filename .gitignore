@@ -4,9 +4,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Project data
-projects.json
-
 # OS Files
 .DS_Store
 Thumbs.db
