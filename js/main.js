@@ -716,8 +716,15 @@ function renderImages(images, mainImageContainer, galleryContainer, noImagesDiv,
         var thumbDiv = document.createElement('div');
         thumbDiv.className = 'project-gallery-item';
 
-        // Determine filename and whether it's the main image
-        var filename = imgPath.split('/').pop();
+        // Determine filename/identifier and whether it's the main image
+        // For MongoDB images: path is "/api/images/<objectId>", use the objectId as identifier
+        // For disk images: path is "img/folder/file.jpg", use the filename
+        var filename;
+        if (rawImageData && rawImageData[index]) {
+            filename = rawImageData[index].filename;
+        } else {
+            filename = imgPath.split('/').pop();
+        }
         var isMain = rawImageData ? rawImageData[index] && rawImageData[index].isMain : filename.toLowerCase().startsWith('main.');
 
         // Mark the main image with a special class for highlighting
@@ -795,7 +802,9 @@ function renderImages(images, mainImageContainer, galleryContainer, noImagesDiv,
 function deleteGalleryImage(folderName, filename, element) {
     if (!confirm('Delete this image?')) return;
 
-    fetch('/api/projects/' + folderName + '/images/' + encodeURIComponent(filename), {
+    // filename might be a MongoDB ObjectId or a regular filename
+    var encodedFilename = encodeURIComponent(filename);
+    fetch('/api/projects/' + folderName + '/images/' + encodedFilename, {
         method: 'DELETE'
     })
     .then(function (r) { return r.json(); })

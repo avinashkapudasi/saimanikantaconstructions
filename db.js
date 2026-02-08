@@ -1,6 +1,23 @@
 const mongoose = require('mongoose');
 
-// Project Schema — mirrors the fields from your "Add New Project" form
+// ─── Image Schema — stores image binary data in MongoDB ───────────
+const imageSchema = new mongoose.Schema({
+    projectId:   { type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true },
+    filename:    { type: String, required: true },
+    contentType: { type: String, required: true },
+    data:        { type: Buffer, required: true },      // raw binary
+    isMain:      { type: Boolean, default: false },
+    size:        { type: Number, default: 0 }
+}, {
+    timestamps: true
+});
+
+// Index for fast lookups
+imageSchema.index({ projectId: 1 });
+
+const Image = mongoose.model('Image', imageSchema);
+
+// ─── Project Schema — mirrors the fields from your "Add New Project" form ──
 const projectSchema = new mongoose.Schema({
     name:        { type: String, required: true },
     description: { type: String, default: '' },
@@ -45,4 +62,4 @@ function useDB() {
     return isConnected;
 }
 
-module.exports = { Project, connectDB, useDB };
+module.exports = { Project, Image, connectDB, useDB };
