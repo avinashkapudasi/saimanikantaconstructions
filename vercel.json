@@ -36,20 +36,7 @@
       "dest": "/plans/$1"
     },
     {
-      "src": "/(.*\\.html)$",
-      "dest": "/$1"
-    },
-    {
-      "src": "/(.*\\.ico|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.gif|.*\\.webp|.*\\.svg|.*\\.mp4)$",
-      "dest": "/$1"
-    },
-    {
-      "src": "/CNAME",
-      "dest": "/CNAME"
-    },
-    {
-      "src": "^/$",
-      "dest": "/index.html"
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",

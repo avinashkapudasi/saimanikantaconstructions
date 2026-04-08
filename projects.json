@@ -8,14 +8,14 @@
       "folder": "proj2",
       "location": "Madhavadara, Visakhapatnam",
       "status": "Completed",
-      "client": "Madhavadara",
-      "duration": "6months",
+      "client": "",
+      "duration": "",
       "area": "",
       "type": "Residential",
       "mainImage": "img/proj2/main.jpg",
       "images": [],
       "createdAt": "2024-03-07T00:00:00.000Z",
-      "updatedAt": "2026-02-08T05:23:49.380Z"
+      "updatedAt": "2024-03-07T00:00:00.000Z"
     },
     {
       "id": "seed-proj3",
@@ -67,25 +67,6 @@
       "images": [],
       "createdAt": "2024-03-07T00:00:00.000Z",
       "updatedAt": "2024-03-07T00:00:00.000Z"
-    },
-    {
-      "id": "1770532150295",
-      "name": "test",
-      "description": "test",
-      "category": "second",
-      "folder": "test",
-      "location": "test1",
-      "status": "",
-      "client": "a",
-      "duration": "6",
-      "area": "2500",
-      "type": "residential",
-      "mainImage": "img/test/main.jpg",
-      "images": [
-        "img/test/sword-art-online-kirito-sword-art-online-wallpaper-preview.jpg"
-      ],
-      "createdAt": "2026-02-08T06:29:10.296Z",
-      "updatedAt": "2026-02-08T06:29:10.296Z"
     }
   ]
 }
