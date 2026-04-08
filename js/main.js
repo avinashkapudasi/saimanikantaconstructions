@@ -135,11 +135,21 @@
     
     // Admin Login Session Management
     function checkAdminLogin() {
-        return sessionStorage.getItem('adminLoggedIn') === 'true';
+        return !!sessionStorage.getItem('adminToken');
     }
     
-    function setAdminLogin(status) {
-        sessionStorage.setItem('adminLoggedIn', status);
+    function getAdminToken() {
+        return sessionStorage.getItem('adminToken') || '';
+    }
+    
+    function setAdminLogin(token) {
+        if (token) {
+            sessionStorage.setItem('adminToken', token);
+            sessionStorage.setItem('adminLoggedIn', 'true');
+        } else {
+            sessionStorage.removeItem('adminToken');
+            sessionStorage.setItem('adminLoggedIn', 'false');
+        }
     }
     
     function updateAdminButton() {
@@ -183,7 +193,7 @@
             if (checkAdminLogin()) {
                 // User is logged in, perform logout
                 if (confirm("Are you sure you want to logout?")) {
-                    setAdminLogin('false');
+                    setAdminLogin(null);
                     updateAdminButton();
                     updateAdminFeatures();
                     alert("You have been logged out successfully.");
@@ -222,30 +232,35 @@
             var password = document.getElementById("adminPassword").value;
             var errorDiv = document.getElementById("adminLoginError");
             
-            // Default credentials
-            var defaultUsername = "adminsmcs";
-            var defaultPassword = "smcs@9491";
-            
-            if (username === defaultUsername && password === defaultPassword) {
-                // Successful login
-                errorDiv.classList.remove("show");
-                adminModal.style.display = "none";
-                
-                // Set login session
-                setAdminLogin('true');
-                updateAdminButton();
-                updateAdminFeatures();
-                
-                alert("Login successful! Welcome Admin.");
-                
-            } else {
-                // Failed login
-                errorDiv.textContent = "Invalid username or password!";
+            // Send login request to server (credentials verified server-side)
+            fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: username, password: password })
+            })
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                if (data.success && data.token) {
+                    // Successful login — store token securely
+                    errorDiv.classList.remove("show");
+                    adminModal.style.display = "none";
+                    
+                    setAdminLogin(data.token);
+                    updateAdminButton();
+                    updateAdminFeatures();
+                    
+                    alert(data.message || "Login successful! Welcome Admin.");
+                } else {
+                    // Failed login
+                    errorDiv.textContent = data.error || "Invalid username or password!";
+                    errorDiv.classList.add("show");
+                    document.getElementById("adminPassword").value = "";
+                }
+            })
+            .catch(function(err) {
+                errorDiv.textContent = "Server error: " + err.message + ". Make sure server is running.";
                 errorDiv.classList.add("show");
-                
-                // Clear password field
-                document.getElementById("adminPassword").value = "";
-            }
+            });
         }
     }
     
@@ -370,9 +385,12 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
             submitBtn.disabled = true;
             
-            // Send to server
+            // Send to server with auth token
             fetch('/api/projects', {
                 method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + getAdminToken()
+                },
                 body: formData
             })
             .then(function(response) {
@@ -414,7 +432,12 @@
 
 // Global admin helper (accessible outside the jQuery IIFE)
 function isAdminLoggedIn() {
-    return sessionStorage.getItem('adminLoggedIn') === 'true';
+    return !!sessionStorage.getItem('adminToken');
+}
+
+// Global helper to get the auth token for API calls
+function getAdminToken() {
+    return sessionStorage.getItem('adminToken') || '';
 }
 
 // Dynamically build the project details grid from the project JSON object.
@@ -805,7 +828,8 @@ function deleteGalleryImage(folderName, filename, element) {
     // filename might be a MongoDB ObjectId or a regular filename
     var encodedFilename = encodeURIComponent(filename);
     fetch('/api/projects/' + folderName + '/images/' + encodedFilename, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer ' + getAdminToken() }
     })
     .then(function (r) { return r.json(); })
     .then(function (data) {
@@ -827,7 +851,8 @@ function deleteGalleryImage(folderName, filename, element) {
 
 function setImageAsMain(folderName, filename) {
     fetch('/api/projects/' + folderName + '/images/' + encodeURIComponent(filename) + '/set-main', {
-        method: 'PUT'
+        method: 'PUT',
+        headers: { 'Authorization': 'Bearer ' + getAdminToken() }
     })
     .then(function (r) { return r.json(); })
     .then(function (data) {
@@ -880,6 +905,7 @@ function uploadGalleryImages(files, folderName) {
 
     fetch('/api/projects/' + folderName + '/images', {
         method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + getAdminToken() },
         body: formData
     })
     .then(function (r) { return r.json(); })
@@ -1155,7 +1181,10 @@ function saveProjectData(projectData) {
     if (projectData.id) {
         fetch('/api/projects/' + projectData.id, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getAdminToken()
+            },
             body: JSON.stringify(projectData)
         })
         .then(function(response) { return response.json(); })
@@ -1256,7 +1285,8 @@ function deleteProject() {
 
     // Delete via folder-based endpoint (works for both static & dynamic projects)
     fetch('/api/projects/folder/' + encodeURIComponent(folderName), {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer ' + getAdminToken() }
     })
     .then(function(response) { return response.json(); })
     .then(function(data) {
@@ -1268,7 +1298,10 @@ function deleteProject() {
 
     // Also try id-based delete if it has one
     if (projectId) {
-        fetch('/api/projects/' + projectId, { method: 'DELETE' })
+        fetch('/api/projects/' + projectId, {
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + getAdminToken() }
+        })
             .then(function(r) { return r.json(); })
             .catch(function() {});
     }
@@ -1386,7 +1419,8 @@ function quickDeleteProject(folderName, projectName) {
 
     // Delete folder via API
     fetch('/api/projects/folder/' + encodeURIComponent(folderName), {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer ' + getAdminToken() }
     })
     .then(function(r) { return r.json(); })
     .then(function(data) { console.log('Folder deleted:', data); })

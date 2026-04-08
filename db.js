@@ -1,23 +1,6 @@
 const mongoose = require('mongoose');
 
-// ─── Image Schema — stores image binary data in MongoDB ───────────
-const imageSchema = new mongoose.Schema({
-    projectId:   { type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true },
-    filename:    { type: String, required: true },
-    contentType: { type: String, required: true },
-    data:        { type: Buffer, required: true },      // raw binary
-    isMain:      { type: Boolean, default: false },
-    size:        { type: Number, default: 0 }
-}, {
-    timestamps: true
-});
-
-// Index for fast lookups
-imageSchema.index({ projectId: 1 });
-
-const Image = mongoose.model('Image', imageSchema);
-
-// ─── Project Schema — mirrors the fields from your "Add New Project" form ──
+// ─── Project Schema ───────────────────────────────────────────────
 const projectSchema = new mongoose.Schema({
     name:        { type: String, required: true },
     description: { type: String, default: '' },
@@ -29,19 +12,32 @@ const projectSchema = new mongoose.Schema({
     duration:    { type: String, default: '' },
     area:        { type: String, default: '' },
     type:        { type: String, default: '' },
+    // Images stored as Cloudinary URLs
     mainImage:   { type: String, default: '' },
-    images:      { type: [String], default: [] }
+    images: [{
+        url:       { type: String, required: true },   // Cloudinary URL
+        publicId:  { type: String, required: true },   // Cloudinary public_id (for deletion)
+        filename:  { type: String, default: '' },
+        isMain:    { type: Boolean, default: false }
+    }]
 }, {
-    timestamps: true  // auto createdAt & updatedAt
+    timestamps: true
 });
 
 const Project = mongoose.model('Project', projectSchema);
 
-// ─── Connect to MongoDB ───────────────────────────────────────────
+// ─── Connect to MongoDB (with Vercel serverless caching) ──────────
 let isConnected = false;
 
 async function connectDB() {
-    if (isConnected) return;
+    // If already connected (warm serverless invocation), skip
+    if (isConnected && mongoose.connection.readyState === 1) return;
+
+    // If mongoose already has a connection from a previous invocation, reuse it
+    if (mongoose.connection.readyState === 1) {
+        isConnected = true;
+        return;
+    }
 
     const uri = process.env.MONGODB_URI;
     if (!uri) {
@@ -50,16 +46,21 @@ async function connectDB() {
     }
 
     try {
-        await mongoose.connect(uri);
+        await mongoose.connect(uri, {
+            maxPoolSize: 5,           // Keep pool small for serverless
+            serverSelectionTimeoutMS: 5000,
+            socketTimeoutMS: 30000,
+        });
         isConnected = true;
         console.log('✅ Connected to MongoDB Atlas');
     } catch (err) {
         console.error('❌ MongoDB connection error:', err.message);
+        isConnected = false;
     }
 }
 
 function useDB() {
-    return isConnected;
+    return isConnected && mongoose.connection.readyState === 1;
 }
 
-module.exports = { Project, Image, connectDB, useDB };
+module.exports = { Project, connectDB, useDB };
